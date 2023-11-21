@@ -1,4 +1,5 @@
-﻿using Smartwyre.DeveloperTest.CustomExceptions;
+﻿using Serilog;
+using Smartwyre.DeveloperTest.CustomExceptions;
 using Smartwyre.DeveloperTest.Data;
 using Smartwyre.DeveloperTest.Services.RebateCalculator;
 using Smartwyre.DeveloperTest.Types;
@@ -12,16 +13,18 @@ public class RebateService : IRebateService
     private readonly IProductDataStore _productDataStore;
     private readonly IRebateDataStore _rebateDataStore;
     private readonly Dictionary<IncentiveType, IRebateCalculator> _rebateCalculatorStrategy;
+    private readonly ILogger _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RebateService"/> class.
     /// </summary>
     /// <param name="productDataStore"> The data store for product information </param>
     /// <param name="rebateDataStore"> The data store for rebate information </param>
-    public RebateService( IProductDataStore productDataStore, IRebateDataStore rebateDataStore)
+    public RebateService( IProductDataStore productDataStore, IRebateDataStore rebateDataStore, ILogger logger)
     {
         _productDataStore = productDataStore;
         _rebateDataStore = rebateDataStore;
+        _logger = logger;
         _rebateCalculatorStrategy = new Dictionary<IncentiveType, IRebateCalculator> {
             { IncentiveType.AmountPerUom, new AmountPerUomRebateCalculator() },
             { IncentiveType.FixedCashAmount, new FixedCashAmountRebateCalculator() },
@@ -56,7 +59,7 @@ public class RebateService : IRebateService
         {
             result.Success = false;
             /// Write the exception in log
-            Console.WriteLine(ex.ToString());
+            _logger.Error(ex,"Error in Calculate");
         }
         return result;
     }
