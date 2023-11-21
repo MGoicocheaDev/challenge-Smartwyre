@@ -1,4 +1,5 @@
 using Moq;
+using Serilog;
 using Smartwyre.DeveloperTest.Data;
 using Smartwyre.DeveloperTest.Services;
 using Smartwyre.DeveloperTest.Types;
@@ -18,8 +19,9 @@ public class PaymentServiceTests
     {
         var rebateDataStoreMock = new Mock<IRebateDataStore>();
         var productDataStoreMock = new Mock<IProductDataStore>();
+        var loggerMock = new Mock<ILogger>();
 
-        var rebateServices = new RebateService(productDataStoreMock.Object, rebateDataStoreMock.Object);
+        var rebateServices = new RebateService(productDataStoreMock.Object, rebateDataStoreMock.Object, loggerMock.Object);
 
         rebateDataStoreMock.Setup(mock => mock.GetRebate(It.IsAny<string>()))
                            .Returns(new Rebate { Incentive = incentiveType, Amount = 10 });
@@ -44,8 +46,9 @@ public class PaymentServiceTests
     {
         var rebateDataStoreMock = new Mock<IRebateDataStore>();
         var productDataStoreMock = new Mock<IProductDataStore>();
+        var loggerMock = new Mock<ILogger>();
 
-        var rebateServices = new RebateService(productDataStoreMock.Object, rebateDataStoreMock.Object);
+        var rebateServices = new RebateService(productDataStoreMock.Object, rebateDataStoreMock.Object, loggerMock.Object);
 
         rebateDataStoreMock.Setup(mock => mock.GetRebate(It.IsAny<string>()))
                            .Returns((Rebate)null);
@@ -67,8 +70,9 @@ public class PaymentServiceTests
     {
         var rebateDataStoreMock = new Mock<IRebateDataStore>();
         var productDataStoreMock = new Mock<IProductDataStore>();
+        var loggerMock = new Mock<ILogger>();
 
-        var rebateServices = new RebateService(productDataStoreMock.Object, rebateDataStoreMock.Object);
+        var rebateServices = new RebateService(productDataStoreMock.Object, rebateDataStoreMock.Object, loggerMock.Object);
 
         rebateDataStoreMock.Setup(mock => mock.GetRebate(It.IsAny<string>()))
                            .Returns(new Rebate { Incentive = incentiveType, Amount = 10 });
@@ -91,11 +95,14 @@ public class PaymentServiceTests
     {
         var rebateDataStoreMock = new Mock<IRebateDataStore>();
         var productDataStoreMock = new Mock<IProductDataStore>();
+        var loggerMock = new Mock<ILogger>();
 
+      
         var rebate = new Rebate { Incentive = incentiveType, Amount = 10, Percentage = 0.2m };
         var product = new Product { SupportedIncentives = supported, Price = 2 };
 
-        var rebateServices = new RebateService(productDataStoreMock.Object, rebateDataStoreMock.Object);
+        var rebateServices = new RebateService(productDataStoreMock.Object, rebateDataStoreMock.Object, loggerMock.Object);
+
 
         rebateDataStoreMock.Setup(mock => mock.GetRebate(It.IsAny<string>()))
                            .Returns(rebate);
